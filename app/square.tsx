@@ -1,59 +1,96 @@
 import { View, Text, Button, StyleSheet, TextInput } from "react-native";
 import { useState } from "react";
+import { useRouter } from "expo-router"; // 1. นำเข้า useRouter
 
-
-
-export default function Square(){
-    // พท.พื้นที่สี่เหลี่ยม = กว้าง * ยาว
-    // output = input * input
-    const [width, setWidth] = useState(0)
-    const [lenght, setLenght] = useState(0)
+export default function Square() {
+    const router = useRouter() // 2. สร้างตัวแปร router
+    
+    const [width, setWidth] = useState("")
+    const [length, setLength] = useState("")
     const [area, setArea] = useState(0)
 
+    // ฟังก์ชันคำนวณ
+    function calSquare() {
+        const result = Number(width) * Number(length)
+        setArea(result);
+    }
 
-    function calSquare(){
-    let result = width * lenght
-    setArea(result)
-}
-    return(
+    return (
         <View style={styles.container}>
-            <Text style={styles.mainTitle}>คำนวณพื้นที่สี่เหลี่ยม</Text>
-            {/*<Button title="กลับหน้าแรก"/>*/}
+            <Text style={styles.title}>คำนวณพื้นที่สี่เหลี่ยม</Text>
 
-            <Text>กว้าง {width} ช.ม ยาว {lenght} ช.มพื้นที่คือ{area} ตร.ชม.</Text>
+            {/* กล่องแสดงผลลัพธ์ */}
+            <View style={styles.resultBox}>
+                <Text style={styles.resultText}>พื้นที่คือ: {area} ตร.ซม.</Text>
+            </View>
             
-            <TextInput style={styles.textInput} 
-            placeholder="กรอกความกว้าง"
-            value = {width.toString()}
-            onChangeText={(w) => setWidth(Number(w))}
-            />         
+            {/* ช่องกรอกข้อมูล */}
             <TextInput 
-            value={lenght.toString()}
-            onChangeText={(l) => setLenght(Number(l))}
-            style={styles.textInput} 
-            placeholder="กรอกความยาว"
+                style={styles.input} 
+                placeholder="กรอกความกว้าง (ซม.)"
+                keyboardType="numeric"
+                value={width}
+                onChangeText={setWidth}
+            />         
+
+            <TextInput 
+                style={styles.input} 
+                placeholder="กรอกความยาว (ซม.)"
+                keyboardType="numeric"
+                value={length}
+                onChangeText={setLength}
             />
 
-            <Button title="คำนวณ"onPress={() => calSquare()}/>         
+            {/* กลุ่มปุ่มกด */}
+            <View style={styles.buttonGroup}>
+                <Button title="คำนวณพื้นที่" onPress={calSquare} color="#2ecc71" />
+                
+                {/* 3. ปุ่มกลับหน้าหลัก */}
+                <Button title="กลับหน้าหลัก" onPress={() => router.back()} color="#95a5a6" />
+            </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
-        backgroundColor:"white",
+        backgroundColor: "#fff",
         justifyContent: "center",
-        alignItems: "center" ,
-        gap: 20
-      },
-      mainTitle:{
-        fontSize:20,
-        fontWeight: "700"
-      },
-      textInput:{
-        borderWidth: 1,
+        alignItems: "center",
+        padding: 20,
+        gap: 15 
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: "bold",
+    },
+    resultBox: {
+        backgroundColor: "#f0fdf4",
+        padding: 20,
+        borderRadius: 12,
         width: "80%",
-        borderColor:"green"
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#dcfce7"
+    },
+    resultText: {
+        fontSize: 20,
+        color: "#166534",
+        fontWeight: "bold"
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 10,
+        width: "80%",
+        padding: 15,
+        fontSize: 16,
+        backgroundColor: "#fafafa"
+    },
+    buttonGroup: {
+        width: "80%",
+        gap: 10, // เว้นระยะห่างระหว่างปุ่ม
+        marginTop: 10
     }
-    })
+})
